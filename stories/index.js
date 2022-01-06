@@ -6,6 +6,7 @@ import { action } from "@storybook/addon-actions";
 import "index.scss";
 
 import Button from "components/Button";
+import InterviewerListItem from "components/InterviewerListItem";
 
 storiesOf("Button", module)
   .addParameters({
