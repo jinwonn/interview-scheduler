@@ -59,11 +59,11 @@ storiesOf("DayListItem", module)
       backgrounds: [{ name: "dark", value: "#222f3e", default: true }],
     })
     .add("Monday", () => (
-      <DayList days={days} day={"Monday"} setDay={action("setDay")} />
+      <DayList days={days} day={"Monday"} onChange={action("setDay")} />
     ))
     .add("Tuesday", () => (
-      <DayList days={days} day={"Tuesday"} setDay={action("setDay")} />
+      <DayList days={days} day={"Tuesday"} onChange={action("setDay")} />
     ))
     .add("Wednesday", () => (
-        <DayList days={days} day={"Wednesday"} setDay={action("setDay")} />
+        <DayList days={days} day={"Wednesday"} onChange={action("setDay")} />
     ));
