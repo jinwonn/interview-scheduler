@@ -15,10 +15,14 @@ export default function Form(props) {
     props.onCancel()
   }
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+  }
+
   return (
     <main className="appointment__card appointment__card--create">
       <section className="appointment__card-left">
-        <form autoComplete="off">
+        <form autoComplete="off" onSubmit={handleSubmit}>
           <input
             className="appointment__create-input text--semi-bold"
             name="name"
