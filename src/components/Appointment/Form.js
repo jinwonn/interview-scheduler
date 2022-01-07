@@ -6,6 +6,14 @@ import { action } from "@storybook/addon-actions/dist/preview";
 export default function Form(props) {
   const [student, setStudent] = useState(props.student || "");
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
+  const reset = () =>{
+    setStudent("")
+    setInterviewer("")
+  }
+  const cancel = () => {
+    reset();
+    props.onCancel()
+  }
 
   return (
     <main className="appointment__card appointment__card--create">
@@ -28,7 +36,7 @@ export default function Form(props) {
       </section>
       <section className="appointment__card-right">
         <section className="appointment__actions">
-          <Button danger onClick={action("onCancel")}>Cancel</Button>
+          <Button danger onClick={cancel}>Cancel</Button>
           <Button confirm onClick={action("onConfirm")}>Save</Button>
         </section>
       </section>
