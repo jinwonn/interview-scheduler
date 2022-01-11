@@ -1,8 +1,9 @@
 import React from "react";
 import { useState } from "react";
 
-import DayList from "./DayList";
 import "components/Application.scss";
+import DayList from "./DayList";
+import Appointment from "./Appointment";
 
 const appointments = [
   {
@@ -63,6 +64,10 @@ export default function Application(props) {
       spots: 0,
     },
   ];
+
+  const parsedAppointments = appointments.map((appointment) => 
+    <Appointment key={appointment.id === appointments.length ? "last" : appointment.id} {...appointment} />
+  )
   return (
     <main className="layout">
       <section className="sidebar">      
@@ -81,7 +86,7 @@ export default function Application(props) {
         </nav>
       </section>
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
+        {parsedAppointments}
       </section>
     </main>
   );
