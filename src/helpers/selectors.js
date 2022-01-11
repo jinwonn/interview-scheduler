@@ -12,3 +12,12 @@ export function getAppointmentsForDay(state, day) {
   
   return appointmentsForDay;
 }
+
+export function getInterview(state, interview) {
+  let result = null
+  if (interview) {
+    result = interview
+    result.interviewer = state.interviewers[interview.interviewer]
+  }
+  return result
+}
