@@ -17,13 +17,22 @@ export default function Application(props) {
 
   const setDay = day => setState({...state, day});
 
-  let dailyAppointments = getAppointmentsForDay(state, state.day);
+  const bookInterview = (id, interview) => {
+    console.log("bookInterview with details:", id, interview);
+  };
+
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
 
   const parsedAppointments = dailyAppointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview)
     
     return (
-      <Appointment key={appointment.id === dailyAppointments.length ? "last" : appointment.id} {...appointment} interview={interview}/>
+      <Appointment 
+        key={appointment.id === dailyAppointments.length ? "last" : appointment.id}
+        {...appointment} 
+        interview={interview}
+        bookInterview={bookInterview}
+      />
     ) 
   })
 

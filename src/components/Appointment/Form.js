@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Button from "components/Button";
 import InterviewerList from "components/InterviewerList";
-import { action } from "@storybook/addon-actions/dist/preview";
+// import { action } from "@storybook/addon-actions/dist/preview";
 
 export default function Form(props) {
   const [student, setStudent] = useState(props.student || "");
@@ -41,7 +41,7 @@ export default function Form(props) {
       <section className="appointment__card-right">
         <section className="appointment__actions">
           <Button danger onClick={cancel}>Cancel</Button>
-          <Button confirm onClick={action("onConfirm")}>Save</Button>
+          <Button confirm onClick={()=>{props.onSave(student, interviewer)}}>Save</Button>
         </section>
       </section>
     </main>
