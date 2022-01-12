@@ -1,8 +1,48 @@
 import React from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 import "components/Application.scss";
+import DayList from "./DayList";
+import Appointment from "./Appointment";
+import { getAppointmentsForDay, getInterview } from "helpers/selectors";
 
 export default function Application(props) {
+  const [state, setState] = useState({
+    day: "Monday",
+    days: [],
+    appointments: {},
+    interviewers: {}
+  })
+
+  const setDay = day => setState({...state, day});
+
+  let dailyAppointments = getAppointmentsForDay(state, state.day);
+
+  const parsedAppointments = dailyAppointments.map((appointment) => {
+    const interview = getInterview(state, appointment.interview)
+    
+    return (
+      <Appointment key={appointment.id === dailyAppointments.length ? "last" : appointment.id} {...appointment} interview={interview}/>
+    ) 
+  })
+
+  useEffect(() =>{
+   Promise.all([
+     axios.get("api/days"),
+     axios.get("api/appointments"),
+     axios.get("api/interviewers")
+   ]).then(all => {
+    const [days, appointments, interviewers] = all
+    setState(prev => (
+      {...prev, 
+        days: days.data, 
+        appointments: appointments.data, 
+        interviewers: interviewers.data
+      }))
+   });
+  },[])
+
   return (
     <main className="layout">
       <section className="sidebar">      
@@ -12,10 +52,16 @@ export default function Application(props) {
           alt="Interview Scheduler"
         />
         <hr className="sidebar__separator sidebar--centered" />
-        <nav className="sidebar__menu"></nav>
+        <nav className="sidebar__menu">
+          <DayList
+            days = { state.days }
+            day = { state.day }
+            onChange = {setDay}
+          />
+        </nav>
       </section>
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
+        {parsedAppointments}
       </section>
     </main>
   );
