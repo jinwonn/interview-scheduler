@@ -66,7 +66,7 @@ export default function Application(props) {
     
     return (
       <Appointment 
-        key={appointment.id === dailyAppointments.length ? "last" : appointment.id}
+        key={appointment.id}
         {...appointment} 
         interview={interview}
         interviewers={dailyInterviewers}
@@ -111,6 +111,7 @@ export default function Application(props) {
       </section>
       <section className="schedule">
         {parsedAppointments}
+        <Appointment time="5pm"/>
       </section>
     </main>
   );
