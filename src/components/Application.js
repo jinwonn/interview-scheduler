@@ -36,7 +36,7 @@ export default function Application(props) {
     })
   };
 
-  const cancelInterview = (id) => {
+  const deleteInterview = (id) => {
     const appointment = {
       ...state.appointments[id],
       interview: null
@@ -71,7 +71,7 @@ export default function Application(props) {
         interview={interview}
         interviewers={dailyInterviewers}
         bookInterview={bookInterview}
-        cancelInterview={cancelInterview}
+        cancelInterview={deleteInterview}
       />
     ) 
   })
