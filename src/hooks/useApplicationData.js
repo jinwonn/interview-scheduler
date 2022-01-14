@@ -31,7 +31,7 @@ export default function useApplicationData () {
   const createAppointmentsObject = (id, interview) =>{
     const appointment = {
       ...state.appointments[id],
-      interview: { ...interview}
+      interview: interview ? { ...interview} : null
     };
 
     return {
