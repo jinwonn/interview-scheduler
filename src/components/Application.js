@@ -33,6 +33,10 @@ export default function Application(props) {
       if (response.status ===204) {
         setState({...state, appointments})
       }
+
+      if (response.status === 500) {
+        throw new Error('Status 500')
+      }
     })
   };
 
@@ -54,6 +58,9 @@ export default function Application(props) {
           {...state,
           appointments}
         )
+      }
+      if (response.status === 500) {
+        throw new Error('Status 500')
       }
     })
   }
