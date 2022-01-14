@@ -5,7 +5,7 @@ import axios from "axios";
 import "components/Application.scss";
 import DayList from "./DayList";
 import Appointment from "./Appointment";
-import { getAppointmentsForDay, getInterview } from "helpers/selectors";
+import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "helpers/selectors";
 
 export default function Application(props) {
   const [state, setState] = useState({
@@ -16,14 +16,70 @@ export default function Application(props) {
   })
 
   const setDay = day => setState({...state, day});
+  
+  const bookInterview = (id, interview) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview}
+    };
 
-  let dailyAppointments = getAppointmentsForDay(state, state.day);
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    return axios.put(`/api/appointments/${id}`, {interview})
+    .then(response => {
+      if (response.status ===204) {
+        setState({...state, appointments})
+      }
+
+      if (response.status === 500) {
+        throw new Error('Status 500')
+      }
+    })
+  };
+
+  const deleteInterview = (id) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null
+    }
+
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment
+    };
+
+    return axios.delete(`api/appointments/${id}`)
+    .then(response =>{
+      if(response.status === 204) {
+        setState(
+          {...state,
+          appointments}
+        )
+      }
+      if (response.status === 500) {
+        throw new Error('Status 500')
+      }
+    })
+  }
+
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
+  const dailyInterviewers = getInterviewersForDay(state, state.day)
 
   const parsedAppointments = dailyAppointments.map((appointment) => {
     const interview = getInterview(state, appointment.interview)
     
     return (
-      <Appointment key={appointment.id === dailyAppointments.length ? "last" : appointment.id} {...appointment} interview={interview}/>
+      <Appointment 
+        key={appointment.id}
+        {...appointment} 
+        interview={interview}
+        interviewers={dailyInterviewers}
+        bookInterview={bookInterview}
+        cancelInterview={deleteInterview}
+      />
     ) 
   })
 
@@ -62,6 +118,7 @@ export default function Application(props) {
       </section>
       <section className="schedule">
         {parsedAppointments}
+        <Appointment time="5pm"/>
       </section>
     </main>
   );
