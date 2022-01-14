@@ -28,16 +28,21 @@ export default function useApplicationData () {
     });
    },[])
   
-  const bookInterview = (id, interview) => {
+  const createAppointmentsObject = (id, interview) =>{
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview}
     };
 
-    const appointments = {
+    return {
       ...state.appointments,
       [id]: appointment
     };
+  }
+
+  const bookInterview = (id, interview) => {
+    
+    const appointments = createAppointmentsObject(id, interview);
 
     return axios.put(`/api/appointments/${id}`, {interview})
     .then(response => {
@@ -52,15 +57,8 @@ export default function useApplicationData () {
   };
 
   const deleteInterview = (id) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null
-    }
 
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment
-    };
+    const appointments = createAppointmentsObject(id, null);
 
     return axios.delete(`api/appointments/${id}`)
     .then(response =>{
