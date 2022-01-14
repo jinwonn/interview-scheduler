@@ -40,19 +40,23 @@ export default function useApplicationData () {
     };
   }
 
+  const handleResponse = (response, appointments) => {
+    if (response.status ===204) {
+      setState({...state, appointments})
+    }
+
+    if (response.status === 500) {
+      throw new Error('Status 500')
+    }
+  }
+
   const bookInterview = (id, interview) => {
     
     const appointments = createAppointmentsObject(id, interview);
 
     return axios.put(`/api/appointments/${id}`, {interview})
     .then(response => {
-      if (response.status ===204) {
-        setState({...state, appointments})
-      }
-
-      if (response.status === 500) {
-        throw new Error('Status 500')
-      }
+      handleResponse(response, appointments);
     })
   };
 
@@ -62,17 +66,9 @@ export default function useApplicationData () {
 
     return axios.delete(`api/appointments/${id}`)
     .then(response =>{
-      if(response.status === 204) {
-        setState(
-          {...state,
-          appointments}
-        )
-      }
-      if (response.status === 500) {
-        throw new Error('Status 500')
-      }
+      handleResponse(response, appointments);
     })
-  }
+  };
 
   return { state, setDay, bookInterview, deleteInterview}
 }
