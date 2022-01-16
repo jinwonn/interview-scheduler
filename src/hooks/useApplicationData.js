@@ -78,36 +78,34 @@ export default function useApplicationData () {
     return days;
   }
 
-  const handleResponse = (response, appointments) => {
+  const setApplicationData = (id, interview) => {
+    const appointments = createAppointmentsObject(id, interview);
+    const days = createDaysArray(appointments);
+    const applicationData = { appointments, days }
+    dispatch({ type: SET_APPLICATION_DATA, value: applicationData})
+  };
+
+  const handleResponse = (response, id, interview) => {
     if (response.status ===204) {
-      const days = createDaysArray(appointments);
-      const applicationData = { appointments, days }
-      
-      dispatch({ type: SET_APPLICATION_DATA, value: applicationData})
+      setApplicationData(id, interview);
     }
 
     if (response.status === 500) {
-      throw new Error('Status 500')
+      throw new Error('Status 500');
     }
   }
 
   const bookInterview = (id, interview) => {
-    
-    const appointments = createAppointmentsObject(id, interview);
-
     return axios.put(`/api/appointments/${id}`, {interview})
     .then(response => {
-      handleResponse(response, appointments);
+      handleResponse(response, id, interview);
     })
   };
 
   const deleteInterview = (id) => {
-
-    const appointments = createAppointmentsObject(id, null);
-
     return axios.delete(`api/appointments/${id}`)
     .then(response =>{
-      handleResponse(response, appointments);
+      handleResponse(response, id);
     })
   };
 
