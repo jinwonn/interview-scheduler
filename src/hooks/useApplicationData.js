@@ -1,16 +1,32 @@
-import { useState, useEffect } from "react";
+import { useReducer, useEffect } from "react";
 import axios from "axios";
 
 export default function useApplicationData () {
 
-  const [state, setState] = useState({
-    day: "Monday",
-    days: [],
-    appointments: {},
-    interviewers: {}
-  })
+  const SET_DAY = "SET_DAY";
+  const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 
-  const setDay = day => setState({...state, day});
+  const reducer = (state, action)  => {
+    switch (action.type) {
+      case SET_DAY:
+        return { ...state, day: action.value }
+      case SET_APPLICATION_DATA:
+        return { ...state, ...action.value }
+      default:
+        throw new Error(
+          `Tried to reduce with unsupported action type: ${action.type}`
+        );
+    }
+  }
+
+  const [state, dispatch] = useReducer(reducer, {
+      day: "Monday",
+      days: [],
+      appointments: {},
+      interviewers: {}
+    });
+
+  const setDay = day => dispatch({type: SET_DAY, value: day});
 
   useEffect(() =>{
     Promise.all([
@@ -18,13 +34,14 @@ export default function useApplicationData () {
       axios.get("api/appointments"),
       axios.get("api/interviewers")
     ]).then(all => {
-     const [days, appointments, interviewers] = all
-     setState(prev => (
-       {...prev, 
-         days: days.data, 
-         appointments: appointments.data, 
-         interviewers: interviewers.data
-       }))
+      const [days, appointments, interviewers] = all
+      const applicationData = 
+        { days: days.data, 
+          appointments: appointments.data, 
+          interviewers: interviewers.data
+        }
+
+      dispatch({ type: SET_APPLICATION_DATA, value: applicationData})
     });
    },[])
   
@@ -64,7 +81,9 @@ export default function useApplicationData () {
   const handleResponse = (response, appointments) => {
     if (response.status ===204) {
       const days = createDaysArray(appointments);
-      setState({...state, appointments, days})
+      const applicationData = { appointments, days }
+      
+      dispatch({ type: SET_APPLICATION_DATA, value: applicationData})
     }
 
     if (response.status === 500) {
