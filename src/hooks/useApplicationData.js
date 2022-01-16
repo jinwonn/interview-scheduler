@@ -40,9 +40,31 @@ export default function useApplicationData () {
     };
   }
 
+  const createDaysArray = (appointments) => {
+    const day = state.day;
+    const days = state.days;
+    const dayObject = days.filter((item) => item.name === day)[0]
+    const index = days.indexOf(dayObject)
+
+    const freeSpots = dayObject.appointments.reduce((acc,val) => {
+      if(!appointments[val].interview) acc++
+      return acc
+    },0)
+    
+    const newDayObject = {
+      ...dayObject,
+      spots: freeSpots
+    }
+
+    days.splice(index, 1, newDayObject);
+    
+    return days;
+  }
+
   const handleResponse = (response, appointments) => {
     if (response.status ===204) {
-      setState({...state, appointments})
+      const days = createDaysArray(appointments);
+      setState({...state, appointments, days})
     }
 
     if (response.status === 500) {
