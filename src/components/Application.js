@@ -1,16 +1,59 @@
 import React from "react";
 
 import "components/Application.scss";
+import DayList from "./DayList";
+import Appointment from "./Appointment";
+import { getAppointmentsForDay, getInterviewersForDay, getInterview } from "helpers/selectors";
+import useApplicationData from "hooks/useApplicationData";
 
 export default function Application(props) {
-  return (
-    <main className="layout">
-      <section className="sidebar">
-        {/* Replace this with the sidebar elements during the "Project Setup & Familiarity" activity. */}
-      </section>
-      <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
-      </section>
-    </main>
-  );
+
+	const {
+		state,
+		setDay,
+		bookInterview,
+		deleteInterview
+	} = useApplicationData();
+
+	const dailyAppointments = getAppointmentsForDay(state, state.day);
+	const dailyInterviewers = getInterviewersForDay(state, state.day);
+
+	const parsedAppointments = dailyAppointments.map((appointment) => {
+		const interview = getInterview(state, appointment.interview);
+    
+		return (
+			<Appointment 
+				key={appointment.id}
+				{...appointment} 
+				interview={interview}
+				interviewers={dailyInterviewers}
+				bookInterview={bookInterview}
+				cancelInterview={deleteInterview}
+			/>
+		); 
+	});
+
+	return (
+		<main className="layout">
+			<section className="sidebar">      
+				<img
+					className="sidebar--centered"
+					src="images/logo.png"
+					alt="Interview Scheduler"
+				/>
+				<hr className="sidebar__separator sidebar--centered" />
+				<nav className="sidebar__menu">
+					<DayList
+						days = { state.days }
+						day = { state.day }
+						onChange = {setDay}
+					/>
+				</nav>
+			</section>
+			<section className="schedule">
+				{parsedAppointments}
+				<Appointment time="5pm"/>
+			</section>
+		</main>
+	);
 }
