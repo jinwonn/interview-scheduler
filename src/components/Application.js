@@ -8,52 +8,52 @@ import useApplicationData from "hooks/useApplicationData";
 
 export default function Application(props) {
 
-  const {
-    state,
-    setDay,
-    bookInterview,
-    deleteInterview
-  } = useApplicationData();
+	const {
+		state,
+		setDay,
+		bookInterview,
+		deleteInterview
+	} = useApplicationData();
 
-  const dailyAppointments = getAppointmentsForDay(state, state.day);
-  const dailyInterviewers = getInterviewersForDay(state, state.day)
+	const dailyAppointments = getAppointmentsForDay(state, state.day);
+	const dailyInterviewers = getInterviewersForDay(state, state.day);
 
-  const parsedAppointments = dailyAppointments.map((appointment) => {
-    const interview = getInterview(state, appointment.interview)
+	const parsedAppointments = dailyAppointments.map((appointment) => {
+		const interview = getInterview(state, appointment.interview);
     
-    return (
-      <Appointment 
-        key={appointment.id}
-        {...appointment} 
-        interview={interview}
-        interviewers={dailyInterviewers}
-        bookInterview={bookInterview}
-        cancelInterview={deleteInterview}
-      />
-    ) 
-  })
+		return (
+			<Appointment 
+				key={appointment.id}
+				{...appointment} 
+				interview={interview}
+				interviewers={dailyInterviewers}
+				bookInterview={bookInterview}
+				cancelInterview={deleteInterview}
+			/>
+		); 
+	});
 
-  return (
-    <main className="layout">
-      <section className="sidebar">      
-        <img
-          className="sidebar--centered"
-          src="images/logo.png"
-          alt="Interview Scheduler"
-        />
-        <hr className="sidebar__separator sidebar--centered" />
-        <nav className="sidebar__menu">
-          <DayList
-            days = { state.days }
-            day = { state.day }
-            onChange = {setDay}
-          />
-        </nav>
-      </section>
-      <section className="schedule">
-        {parsedAppointments}
-        <Appointment time="5pm"/>
-      </section>
-    </main>
-  );
+	return (
+		<main className="layout">
+			<section className="sidebar">      
+				<img
+					className="sidebar--centered"
+					src="images/logo.png"
+					alt="Interview Scheduler"
+				/>
+				<hr className="sidebar__separator sidebar--centered" />
+				<nav className="sidebar__menu">
+					<DayList
+						days = { state.days }
+						day = { state.day }
+						onChange = {setDay}
+					/>
+				</nav>
+			</section>
+			<section className="schedule">
+				{parsedAppointments}
+				<Appointment time="5pm"/>
+			</section>
+		</main>
+	);
 }
