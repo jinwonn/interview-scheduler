@@ -31,6 +31,8 @@ export default function Form(props) {
       setError("Interviewer must be selected");
       return;
     }
+
+    setError("");
   
     props.onSave(student, interviewer);
   }
