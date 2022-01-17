@@ -6,11 +6,14 @@ export default function useApplicationData () {
 	const SET_DAY = "SET_DAY";
 	const SET_APPLICATION_DATA = "SET_APPLICATION_DATA";
 	const UPDATE_APPLICATION_DATA ="UPDATE_APPLICATION_DATA";
+  const API_RESPONSE = "API_RESPONSE";
 
 	const reducer = (state, action)  => {
 		switch (action.type) {
 		case SET_DAY:
 			return { ...state, day: action.value };
+    case API_RESPONSE:
+			return { ...state, ...action.value };
 		case SET_APPLICATION_DATA:
 			return { ...state, ...action.value };
 		case UPDATE_APPLICATION_DATA:
@@ -72,7 +75,8 @@ export default function useApplicationData () {
 		Promise.all([
 			axios.get("api/days"),
 			axios.get("api/appointments"),
-			axios.get("api/interviewers")
+			axios.get("api/interviewers"),
+      dispatch({ type: API_RESPONSE, value: { apiResponse: "waiting"}})
 		]).then(all => {
 			const [days, appointments, interviewers] = all;
 			const applicationData = 
@@ -88,10 +92,11 @@ export default function useApplicationData () {
 				const message = JSON.parse(event.data);
 				if(message.type === "SET_INTERVIEW") {
 					const applicationData = {id: message.id, interview: message.interview};
-					console.log(applicationData);
 					dispatch({ type: UPDATE_APPLICATION_DATA, value: applicationData});
 				}
 			};
+
+      dispatch({ type: API_RESPONSE, value: { apiResponse: "received"}});
 		});
 	},[]);
 
